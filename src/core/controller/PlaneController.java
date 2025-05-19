@@ -1,48 +1,84 @@
 package core.controller;
+
 import core.controller.utils.Response;
 import core.controller.utils.Status;
+import core.model.Plane;
+import core.model.storage.StoragePlane;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class PlaneController {
 
     public static Response createPlane(String id, String brand, String model,
             String maxCapacity, String airline) {
         try {
-            // Validar ID: formato XXYYYYY (2 letras mayúsculas seguidas de 5 dígitos)
-            if (id == null || !id.matches("^[A-Z]{2}\\d{5}$")) {
-                return new Response("Plane ID must follow the format XXYYYYY (2 uppercase letters and 5 digits)", Status.BAD_REQUEST);
+            // Validación de parámetros
+            Response validation = validatePlaneParameters(id, brand, model, maxCapacity, airline);
+            if (validation != null) {
+                return validation;
             }
 
-            // Validar que brand, model y airline no estén vacíos
-            if (brand == null || brand.trim().isEmpty()) {
-                return new Response("Brand must not be empty", Status.BAD_REQUEST);
-            }
+            int capacity = Integer.parseInt(maxCapacity);
+            Plane newPlane = new Plane(id, brand, model, capacity, airline);
 
-            if (model == null || model.trim().isEmpty()) {
-                return new Response("Model must not be empty", Status.BAD_REQUEST);
+            if (!StoragePlane.getInstance().add(newPlane)) {
+                return new Response("Plane with ID " + id + " already exists", Status.BAD_REQUEST);
             }
-
-            if (airline == null || airline.trim().isEmpty()) {
-                return new Response("Airline must not be empty", Status.BAD_REQUEST);
-            }
-
-            // Validar y convertir maxCapacity
-            int capacity;
-            try {
-                capacity = Integer.parseInt(maxCapacity);
-                if (capacity <= 0) {
-                    return new Response("Max capacity must be a positive number", Status.BAD_REQUEST);
-                }
-            } catch (NumberFormatException e) {
-                return new Response("Max capacity must be numeric", Status.BAD_REQUEST);
-            }
-
-            // Si todo es válido, retornar 501 (aún no implementado el almacenamiento)
-            return new Response("Plane creation not implemented", Status.NOT_IMPLEMENTED);
+            return new Response("Plane created successfully", Status.CREATED, newPlane);
 
         } catch (Exception e) {
-            return new Response("Unexpected error", Status.INTERNAL_SERVER_ERROR);
+            return new Response("Unexpected error: " + e.getMessage(), Status.INTERNAL_SERVER_ERROR);
         }
-
     }
 
+    public static Response getAllPlanes() {
+        try {
+            List<Plane> planes = StoragePlane.getInstance().getPlanes();
+
+            if (planes == null || planes.isEmpty()) {
+                return new Response("No planes available", Status.OK, Collections.emptyList());
+            }
+
+            List<Plane> copies = planes.stream()
+                    .filter(Objects::nonNull)
+                    .map(Plane::clone)
+                    .collect(Collectors.toList());
+
+            return new Response("Planes retrieved successfully", Status.OK, copies);
+        } catch (Exception e) {
+            return new Response("Error retrieving planes: " + e.getMessage(), Status.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    private static Response validatePlaneParameters(String id, String brand, String model,
+            String maxCapacity, String airline) {
+        if (id == null || !id.matches("^[A-Z]{2}\\d{5}$")) {
+            return new Response("Invalid plane ID format (XXYYYYY)", Status.BAD_REQUEST);
+        }
+
+        if (brand == null || brand.trim().isEmpty()) {
+            return new Response("Brand is required", Status.BAD_REQUEST);
+        }
+
+        if (model == null || model.trim().isEmpty()) {
+            return new Response("Model is required", Status.BAD_REQUEST);
+        }
+
+        if (airline == null || airline.trim().isEmpty()) {
+            return new Response("Airline is required", Status.BAD_REQUEST);
+        }
+
+        try {
+            int capacity = Integer.parseInt(maxCapacity);
+            if (capacity <= 0) {
+                return new Response("Capacity must be positive", Status.BAD_REQUEST);
+            }
+        } catch (NumberFormatException e) {
+            return new Response("Invalid capacity format", Status.BAD_REQUEST);
+        }
+
+        return null;
+    }
 }

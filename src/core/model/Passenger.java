@@ -8,13 +8,14 @@ import core.model.Flight;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
  * @author edangulo
  */
 public class Passenger {
-    
+
     private final long id;
     private String firstname;
     private String lastname;
@@ -38,7 +39,19 @@ public class Passenger {
     public void addFlight(Flight flight) {
         this.flights.add(flight);
     }
-    
+
+    public Passenger clone() {
+        return new Passenger(
+                this.id,
+                this.firstname,
+                this.lastname,
+                this.birthDate,
+                this.countryPhoneCode,
+                this.phone,
+                this.country
+        );
+    }
+
     public long getId() {
         return id;
     }
@@ -94,21 +107,21 @@ public class Passenger {
     public void setCountry(String country) {
         this.country = country;
     }
-    
+
     public String getFullname() {
         return firstname + " " + lastname;
     }
-    
+
     public String generateFullPhone() {
         return "+" + countryPhoneCode + " " + phone;
     }
-    
+
     public int calculateAge() {
         return Period.between(birthDate, LocalDate.now()).getYears();
     }
-    
+
     public int getNumFlights() {
         return flights.size();
     }
-    
+
 }

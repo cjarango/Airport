@@ -2,6 +2,12 @@ package core.controller;
 
 import core.controller.utils.Response;
 import core.controller.utils.Status;
+import core.model.Location;
+import core.model.storage.StorageLocation;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class LocationController {
 
@@ -60,5 +66,23 @@ public class LocationController {
             return new Response("Unexpected error", Status.INTERNAL_SERVER_ERROR);
         }
     }
+    
+    public static Response getAllLocations() {
+        StorageLocation storage = StorageLocation.getInstance();
+        List<Location> originals = storage.getLocations();
+        
+        if (originals == null || originals.isEmpty()) {
+            return new Response("No locations available", Status.OK, Collections.emptyList());
+        }
 
+        try {
+            List<Location> copies = originals.stream()
+                    .filter(Objects::nonNull)
+                    .map(Location::clone)
+                    .collect(Collectors.toList());
+            return new Response("Locations retrieved successfully", Status.OK, copies);
+        } catch (Exception e) {
+            return new Response("Error cloning locations", Status.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

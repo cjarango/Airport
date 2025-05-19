@@ -25,6 +25,17 @@ public class Location {
         this.airportLatitude = airportLatitude;
         this.airportLongitude = airportLongitude;
     }
+    
+    public Location clone() {
+        return new Location(
+                this.airportId,
+                this.airportName,
+                this.airportCountry,
+                this.airportCountry,
+                this.airportLatitude,
+                this.airportLongitude
+        );
+    }
 
     public String getAirportId() {
         return airportId;

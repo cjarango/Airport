@@ -33,6 +33,16 @@ public class Plane {
         this.flights.add(flight);
     }
     
+    public Plane clone() {
+        return new Plane(
+                this.id,
+                this.brand,
+                this.model,
+                this.maxCapacity,
+                this.airline
+        );
+    }
+    
     public String getId() {
         return id;
     }
