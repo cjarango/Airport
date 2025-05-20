@@ -29,22 +29,20 @@ public class StoragePlane implements StorageInterface<Plane, String> {
     }
 
     /**
-     * Agrega un avión a la lista si no existe otro avión con el mismo ID. Luego
-     * ordena la lista por ID para mantener el orden.
+     * Agrega un avión si no existe otro con el mismo ID.
      *
-     * @param plane El avión a agregar.
-     * @return {@code true} si el avión fue agregado exitosamente; {@code false}
-     * si ya existe un avión con el mismo ID.
+     * @param plane El avión a agregar
+     * @return true si se agregó exitosamente, false si ya existe un avión con
+     * ese ID
      */
     @Override
     public boolean add(Plane plane) {
-        for (Plane p : this.planes) {
-            if (p.getId() == null ? plane.getId() == null : p.getId().equals(plane.getId())) {
-                return false;
-            }
+        // Validación de entrada y verificación de existencia
+        if (getById(plane.getId()) != null) {
+            return false;
         }
         this.planes.add(plane);
-        this.planes.sort(Comparator.comparing(Plane::getId)); // Ordenar la lista después de agregar
+        this.planes.sort(Comparator.comparing(Plane::getId)); // Mantener orden
         return true;
     }
 

@@ -57,11 +57,16 @@ public class LocationController {
                     return new Response("Longitude must have at most 4 decimal places", Status.BAD_REQUEST);
                 }
             } catch (NumberFormatException e) {
-                return new Response("Longitude must be numeric", Status.BAD_REQUEST);
+                return new Response("Longitude must be numeric", Status.BAD_REQUEST);   
             }
+            
+            Location newLocation = new Location(id, name, city, country, lat, lon);
+            
+            if (!StorageLocation.getInstance().add(newLocation)) {
+                return new Response("An location with that id already exists", Status.BAD_REQUEST);
+            }
+            return new Response("Location created successfully", Status.CREATED);
 
-            // Todo válido, pero aún no se implementa el almacenamiento
-            return new Response("Location creation not implemented", Status.NOT_IMPLEMENTED);
         } catch (Exception ex) {
             return new Response("Unexpected error", Status.INTERNAL_SERVER_ERROR);
         }

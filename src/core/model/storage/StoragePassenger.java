@@ -29,22 +29,21 @@ public class StoragePassenger implements StorageInterface<Passenger, Long> {
     }
 
     /**
-     * Agrega un pasajero a la lista si no existe otro pasajero con el mismo ID.
-     * Luego ordena la lista por ID para mantener el orden.
+     * Agrega un pasajero si no existe otro con el mismo ID.
      *
-     * @param passenger El pasajero a agregar.
-     * @return {@code true} si el pasajero fue agregado exitosamente;
-     * {@code false} si ya existe un pasajero con el mismo ID.
+     * @param passenger El pasajero a agregar
+     * @return true si se agregó exitosamente, false si ya existe un pasajero
+     * con ese ID
      */
     @Override
     public boolean add(Passenger passenger) {
-        for (Passenger p : this.passengers) {
-            if (p.getId() == passenger.getId()) {
-                return false;
-            }
+        // Validación de entrada y verificación de existencia
+        if (getById(passenger.getId()) != null) {
+            return false;
         }
+
         this.passengers.add(passenger);
-        this.passengers.sort(Comparator.comparingLong(Passenger::getId)); // Ordenar la lista después de agregar
+        this.passengers.sort(Comparator.comparingLong(Passenger::getId)); // Mantener orden
         return true;
     }
 

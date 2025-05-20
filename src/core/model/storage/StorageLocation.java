@@ -23,35 +23,36 @@ public class StorageLocation implements StorageInterface<Location, String> {
         }
         return instance;
     }
-    
+
     public List<Location> getLocations() {
         return new ArrayList<>(this.locations);
     }
-    
+
     /**
-     * Agrega un avión a la lista si no existe otro avión con el mismo ID. Luego
-     * ordena la lista por ID para mantener el orden.
+     * Agrega una ubicación si no existe otra con el mismo ID de aeropuerto.
      *
-     * @param location El aeropuerto a agregar.
-     * @return {@code true} si el aeropuerto fue agregado exitosamente; {@code false}
-     * si ya existe un avión con el mismo ID.
+     * @param location La ubicación a agregar
+     * @return true si se agregó exitosamente, false si ya existe una ubicación
+     * con ese ID
      */
     @Override
     public boolean add(Location location) {
-        for (Location p : this.locations) {
-            if (p.getAirportId() == null ? location.getAirportId() == null : p.getAirportId().equals(location.getAirportId())) {
-                return false;
-            }
+        // Validación de entrada y verificación de existencia usando búsqueda binaria
+        if (getById(location.getAirportId()) != null) {
+            return false;
         }
+
         this.locations.add(location);
-        this.locations.sort(Comparator.comparing(Location::getAirportId)); // Ordenar la lista después de agregar
+        this.locations.sort(Comparator.comparing(Location::getAirportId)); // Mantener orden
         return true;
     }
-    
+
     /**
-     * Busca un auropuerto en la lista ordenada por su ID usando búsqueda binaria.
+     * Busca un auropuerto en la lista ordenada por su ID usando búsqueda
+     * binaria.
      *
-     * @param id El ID del aeropuerto a buscar. Se asume que no es null ni inválido.
+     * @param id El ID del aeropuerto a buscar. Se asume que no es null ni
+     * inválido.
      * @return El objeto Location con el ID especificado, o null si no se
      * encuentra.
      */

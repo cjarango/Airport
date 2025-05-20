@@ -2,6 +2,12 @@ package core.controller;
 
 import core.controller.utils.Response;
 import core.controller.utils.Status;
+import core.model.Flight;
+import core.model.Location;
+import core.model.Plane;
+import core.model.storage.StorageFlight;
+import core.model.storage.StorageLocation;
+import core.model.storage.StoragePlane;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 
@@ -21,12 +27,44 @@ public class FlightController {
                 return new Response("Plane ID must not be empty", Status.BAD_REQUEST);
             }
 
+            if (!planeId.matches("^[A-Z]{2}\\d{5}$")) {
+                return new Response("Invalid plane ID format. Must be: 2 uppercase letters followed by 5 digits (Example: AB12345)", Status.BAD_REQUEST);
+            }
+
+            // buscamos el id del avión 
+            Plane plane = StoragePlane.getInstance().getById(planeId);
+
+            if (plane == null) {
+                return new Response("Plane not found", Status.NOT_FOUND);
+            }
+
             if (departureLocation == null || departureLocation.trim().isEmpty()) {
                 return new Response("Departure location ID must not be empty", Status.BAD_REQUEST);
             }
 
+            if (!departureLocation.matches("^[A-Z]{3}$")) {
+                return new Response("Airport ID must be exactly 3 uppercase letters", Status.BAD_REQUEST);
+            }
+
+            Location departure = StorageLocation.getInstance().getById(departureLocation);
+
+            if (departure == null) {
+                return new Response("Departure location not found", Status.NOT_FOUND);
+            }
+
             if (arrivalLocation == null || arrivalLocation.trim().isEmpty()) {
                 return new Response("Arrival location ID must not be empty", Status.BAD_REQUEST);
+            }
+
+            // validamos las localizaciones
+            if (!arrivalLocation.matches("^[A-Z]{3}$")) {
+                return new Response("Airport ID must be exactly 3 uppercase letters", Status.BAD_REQUEST);
+            }
+
+            Location arrival = StorageLocation.getInstance().getById(arrivalLocation);
+
+            if (arrival == null) {
+                return new Response("Arrival location not found", Status.NOT_FOUND);
             }
 
             // Validar que departureDate sea una fecha válida (formato ISO_LOCAL_DATE_TIME)
@@ -49,13 +87,12 @@ public class FlightController {
                 return new Response("Flight duration must be numeric values", Status.BAD_REQUEST);
             }
 
-            // Validación pendiente: existencia del avión y de las localizaciones
-            // Aquí iría algo como:
-            // Plane plane = Storage.getInstance().getPlaneById(planeId);
-            // if (plane == null) return new Response("Plane not found", Status.BAD_REQUEST);
-            // Igual para locations...
-            // Si todo es válido
-            return new Response("Flight creation not implemented", Status.NOT_IMPLEMENTED);
+            Flight newFlight = new Flight(id, plane, departure, arrival, parsedDate, hours, minutes);
+
+            if (!StorageFlight.getInstance().add(newFlight)) {
+                return new Response("An flight with that id already exists", Status.BAD_REQUEST);
+            }
+            return new Response("Flight created successfully", Status.CREATED);
 
         } catch (Exception e) {
             return new Response("Unexpected error", Status.INTERNAL_SERVER_ERROR);
