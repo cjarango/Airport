@@ -42,31 +42,30 @@ public class StorageFlight implements StorageInterface<Flight, String> {
         }
 
         this.flights.add(flight);
-        this.flights.sort(Comparator.comparing(Flight::getId));
+        // Ordenar por fecha/hora de salida (más antiguo a más nuevo)
+        this.flights.sort(Comparator.comparing(Flight::getDepartureDate));
         return true;
     }
 
     /**
-     * Busca un auropuerto en la lista ordenada por su ID usando búsqueda
-     * binaria.
+     * Busca un vuelo en la lista por su ID usando búsqueda secuencial.
      *
-     * @param id El ID del aeropuerto a buscar. Se asume que no es null ni
-     * inválido.
-     * @return El objeto Location con el ID especificado, o null si no se
+     * @param id El ID del vuelo a buscar. Se asume que no es null ni inválido.
+     * @return El objeto Fligth con el ID especificado, o null si no se
      * encuentra.
      */
     @Override
     public Flight getById(String id) {
-        int index = Collections.binarySearch(
-                this.flights,
-                new Flight(id, null, null, null, null, null, 0, 0, 0, 0),
-                Comparator.comparing(Flight::getId)
-        );
-
-        if (index >= 0) {
-            return this.flights.get(index);
+        for (Flight flight : this.flights) {
+            if (flight.getId().equals(id)) {
+                return flight;
+            }
         }
         return null;
+    }
+    
+    public List<Flight> getFlights() {
+        return new ArrayList<>(this.flights);
     }
 
 }

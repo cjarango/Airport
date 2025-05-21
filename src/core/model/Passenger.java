@@ -8,6 +8,7 @@ import core.model.Flight;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -36,8 +37,45 @@ public class Passenger {
         this.flights = new ArrayList<>();
     }
 
-    public void addFlight(Flight flight) {
-        this.flights.add(flight);
+    /**
+     * Verifica si el pasajero tiene asignado un vuelo específico
+     *
+     * @param flightID ID del vuelo (asumimos no null por validación previa)
+     * @return true si el pasajero está en el vuelo
+     */
+    private boolean hasFlight(String flightID) {
+        // Versión optimizada con early return
+        for (Flight flight : this.flights) {
+            if (flight.getId().equals(flightID)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Agrega un vuelo a la lista de vuelos del pasajero si aún no ha sido
+     * agregado.
+     * <p>
+     * La lista de vuelos se mantiene ordenada por fecha de salida en orden
+     * ascendente (de vuelos más antiguos a más recientes). Además, se actualiza
+     * la relación bidireccional agregando este pasajero a la lista de pasajeros
+     * del vuelo.
+     *
+     * @param flight el vuelo a agregar; no debe ser {@code null} y debe tener
+     * un ID válido.
+     * @return {@code true} si el vuelo fue agregado exitosamente; {@code false}
+     * si el vuelo ya estaba asociado al pasajero.
+     */
+    public boolean addFlight(Flight flight) {
+        if (!hasFlight(flight.getId())) {
+            this.flights.add(flight);
+            this.flights.sort(Comparator.comparing(Flight::getDepartureDate));
+            flight.addPassenger(this);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public Passenger clone() {
