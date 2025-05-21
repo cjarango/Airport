@@ -479,6 +479,11 @@ public class AirportFrame extends javax.swing.JFrame {
 
         comboPlaneFlightRegistration.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
         comboPlaneFlightRegistration.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Plane" }));
+        comboPlaneFlightRegistration.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                comboPlaneFlightRegistrationActionPerformed(evt);
+            }
+        });
 
         comboDepartureFlightRegistration.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
         comboDepartureFlightRegistration.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Location" }));
@@ -1496,7 +1501,7 @@ public class AirportFrame extends javax.swing.JFrame {
             txtNumberPhonePassenger.setText("");
             txtCountryPassenger.setText("");
             
-            userSelect.addItem(id);
+            userSelect.addItem(id);// no sé donde va esto
         }
     }//GEN-LAST:event_btnRegisterPassengerActionPerformed
 
@@ -1729,6 +1734,10 @@ public class AirportFrame extends javax.swing.JFrame {
     private void txtModelAirplaneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtModelAirplaneActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtModelAirplaneActionPerformed
+
+    private void comboPlaneFlightRegistrationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboPlaneFlightRegistrationActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_comboPlaneFlightRegistrationActionPerformed
 
     /**
      * @param args the command line arguments
