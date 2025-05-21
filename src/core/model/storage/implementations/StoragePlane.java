@@ -1,6 +1,7 @@
-package core.model.storage;
+package core.model.storage.implementations;
 
-import core.model.Plane;
+import core.model.storage.interfaces.StorageInterface;
+import core.model.entity.Plane;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -8,23 +9,25 @@ import java.util.List;
 
 public class StoragePlane implements StorageInterface<Plane, String> {
 
-    // Instancia Singleton
-    private static StoragePlane instance;
+    private final List<Plane> planes;
 
-    private ArrayList<Plane> planes;
-
-    private StoragePlane() {
+    public StoragePlane() {
         this.planes = new ArrayList<>();
     }
 
-    public static StoragePlane getInstance() {
-        if (instance == null) {
-            instance = new StoragePlane();
-        }
-        return instance;
-    }
-
-    public List<Plane> getPlanes() {
+    /**
+     * Returns a defensive copy of all planes currently stored.
+     *
+     * <p>
+     * <b>Important:</b> This method returns a new {@link ArrayList} containing
+     * all planes to prevent external modifications to the internal storage.
+     * Changes to the returned list will not affect the repository's data.</p>
+     *
+     * @return A new {@link List} containing all stored planes. The list is
+     * empty if no planes are present, never {@code null}.
+     */
+    @Override
+    public List<Plane> getAll() {
         return new ArrayList<>(this.planes);
     }
 

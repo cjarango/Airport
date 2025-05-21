@@ -1,30 +1,33 @@
-package core.model.storage;
+package core.model.storage.implementations;
 
-import core.model.Location;
+import core.model.storage.interfaces.StorageInterface;
+import core.model.entity.Location;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 public class StorageLocation implements StorageInterface<Location, String> {
+    private final List<Location> locations;
 
-    // Instancia Singleton
-    private static StorageLocation instance;
-
-    private ArrayList<Location> locations;
-
-    private StorageLocation() {
+    public StorageLocation() {
         this.locations = new ArrayList<>();
     }
 
-    public static StorageLocation getInstance() {
-        if (instance == null) {
-            instance = new StorageLocation();
-        }
-        return instance;
-    }
-
-    public List<Location> getLocations() {
+    
+    /**
+     * Returns a defensive copy of all locations currently stored.
+     *
+     * <p>
+     * <b>Important:</b> This method returns a new {@link ArrayList} containing
+     * all locations to prevent external modifications to the internal storage.
+     * Changes to the returned list will not affect the repository's data.</p>
+     *
+     * @return A new {@link List} containing all stored locations. The list is
+     * empty if no locations are present, never {@code null}.
+     */
+    @Override
+    public List<Location> getAll() {
         return new ArrayList<>(this.locations);
     }
 

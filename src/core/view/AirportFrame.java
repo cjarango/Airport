@@ -4,10 +4,10 @@
  */
 package core.view;
 
-import core.model.Plane;
-import core.model.Flight;
-import core.model.Passenger;
-import core.model.Location;
+import core.model.entity.Plane;
+import core.model.entity.Flight;
+import core.model.entity.Passenger;
+import core.model.entity.Location;
 import com.formdev.flatlaf.FlatDarkLaf;
 import core.controller.PassengerController;
 import core.controller.utils.Response;

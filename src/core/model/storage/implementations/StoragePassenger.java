@@ -1,30 +1,34 @@
-package core.model.storage;
+package core.model.storage.implementations;
 
-import core.model.Passenger;
+import core.model.entity.Passenger;
+import core.model.storage.interfaces.UpdatableStorageInterface;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class StoragePassenger implements StorageInterface<Passenger, Long> {
+public class StoragePassenger implements UpdatableStorageInterface<Passenger, Long>  {
 
-    // Instancia Singleton
-    private static StoragePassenger instance;
+    private final List<Passenger> passengers;
 
-    private ArrayList<Passenger> passengers;
-
-    private StoragePassenger() {
+    public StoragePassenger() {
         this.passengers = new ArrayList<>();
     }
 
-    public static StoragePassenger getInstance() {
-        if (instance == null) {
-            instance = new StoragePassenger();
-        }
-        return instance;
-    }
 
-    public List<Passenger> getPassengers() {
+    /**
+     * Returns a defensive copy of all passengers currently stored.
+     *
+     * <p>
+     * <b>Important:</b> This method returns a new {@link ArrayList} containing
+     * all passengers to prevent external modifications to the internal storage.
+     * Changes to the returned list will not affect the repository's data.</p>
+     *
+     * @return A new {@link List} containing all stored passengers. The list is
+     * empty if no passengers are present, never {@code null}.
+     */
+    @Override
+    public List<Passenger> getAll() {
         return new ArrayList<>(this.passengers);
     }
 
@@ -69,6 +73,7 @@ public class StoragePassenger implements StorageInterface<Passenger, Long> {
         return null;
     }
 
+    @Override
     public boolean update(Passenger passenger) {
         Passenger inList = getById(passenger.getId());
         if (inList == null) {

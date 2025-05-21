@@ -2,8 +2,9 @@ package core.controller;
 
 import core.controller.utils.Response;
 import core.controller.utils.Status;
-import core.model.Passenger;
-import core.model.storage.StoragePassenger;
+import core.model.entity.Passenger;
+import core.model.manager.implementations.ManagerPassenger;
+import core.model.storage.implementations.StoragePassenger;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.List;
@@ -11,6 +12,9 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class PassengerController {
+    
+    private static final StoragePassenger storagePassenger = new StoragePassenger();
+    private static final ManagerPassenger managerPassenger = ManagerPassenger.getInstance(storagePassenger);
 
     private static Response validatePassengerData(String id, String firstname,
             String lastname, String birthDate, String countryPhoneCode,
@@ -101,7 +105,7 @@ public class PassengerController {
             Passenger newPassenger = parsePassenger(id, firstname, lastname, 
                     birthDate, countryPhoneCode, phone, country);
 
-            if (!StoragePassenger.getInstance().add(newPassenger)) {
+            if (!managerPassenger.add(newPassenger)) {
                 return new Response("A passenger with that id already exists", Status.BAD_REQUEST);
             }
             return new Response("Passenger created successfully", Status.CREATED);
@@ -125,7 +129,7 @@ public class PassengerController {
             Passenger updatedPassenger = parsePassenger(id, firstname, lastname, 
                     birthDate, countryPhoneCode, phone, country);
 
-            if (!StoragePassenger.getInstance().update(updatedPassenger)) {
+            if (!managerPassenger.update(updatedPassenger)) {
                 return new Response("Passenger not found", Status.NOT_FOUND);
             }
             return new Response("Passenger updated successfully", Status.OK);
@@ -137,7 +141,7 @@ public class PassengerController {
 
     public static Response getAllPassengers() {
         try {
-            List<Passenger> passengers = StoragePassenger.getInstance().getPassengers();
+            List<Passenger> passengers = managerPassenger.getAll();
             
             if (passengers == null || passengers.isEmpty()) {
                 return new Response("No passengers available", Status.OK, List.of());

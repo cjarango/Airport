@@ -2,14 +2,18 @@ package core.controller;
 
 import core.controller.utils.Response;
 import core.controller.utils.Status;
-import core.model.Location;
-import core.model.storage.StorageLocation;
+import core.model.entity.Location;
+import core.model.manager.implementations.ManagerLocation;
+import core.model.storage.implementations.StorageLocation;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class LocationController {
+ 
+    private static final StorageLocation storageLocation = new StorageLocation();
+    private static final ManagerLocation managerLocation = ManagerLocation.getInstance(storageLocation);
 
     public static Response createLocation(String id, String name, String city,
             String country, String latitude, String longitude) {
@@ -62,7 +66,7 @@ public class LocationController {
             
             Location newLocation = new Location(id, name, city, country, lat, lon);
             
-            if (!StorageLocation.getInstance().add(newLocation)) {
+            if (!managerLocation.add(newLocation)) {
                 return new Response("An location with that id already exists", Status.BAD_REQUEST);
             }
             return new Response("Location created successfully", Status.CREATED);
@@ -73,8 +77,7 @@ public class LocationController {
     }
     
     public static Response getAllLocations() {
-        StorageLocation storage = StorageLocation.getInstance();
-        List<Location> originals = storage.getLocations();
+        List<Location> originals = managerLocation.getAll();
         
         if (originals == null || originals.isEmpty()) {
             return new Response("No locations available", Status.OK, Collections.emptyList());

@@ -2,14 +2,18 @@ package core.controller;
 
 import core.controller.utils.Response;
 import core.controller.utils.Status;
-import core.model.Plane;
-import core.model.storage.StoragePlane;
+import core.model.entity.Plane;
+import core.model.manager.implementations.ManagerPlane;
+import core.model.storage.implementations.StoragePlane;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class PlaneController {
+    
+    private static final StoragePlane storagePlane = new StoragePlane();
+    private static final ManagerPlane managerPlane = ManagerPlane.getInstance(storagePlane);
 
     public static Response createPlane(String id, String brand, String model,
             String maxCapacity, String airline) {
@@ -23,7 +27,7 @@ public class PlaneController {
             int capacity = Integer.parseInt(maxCapacity);
             Plane newPlane = new Plane(id, brand, model, capacity, airline);
 
-            if (!StoragePlane.getInstance().add(newPlane)) {
+            if (!managerPlane.add(newPlane)) {
                 return new Response("Plane with ID " + id + " already exists", Status.BAD_REQUEST);
             }
             return new Response("Plane created successfully", Status.CREATED, newPlane);
@@ -35,7 +39,7 @@ public class PlaneController {
 
     public static Response getAllPlanes() {
         try {
-            List<Plane> planes = StoragePlane.getInstance().getPlanes();
+            List<Plane> planes = managerPlane.getAll();
 
             if (planes == null || planes.isEmpty()) {
                 return new Response("No planes available", Status.OK, Collections.emptyList());

@@ -2,14 +2,18 @@ package core.controller;
 
 import core.controller.utils.Response;
 import core.controller.utils.Status;
-import core.model.Flight;
-import core.model.Location;
-import core.model.Passenger;
-import core.model.Plane;
-import core.model.storage.StorageFlight;
-import core.model.storage.StorageLocation;
-import core.model.storage.StoragePassenger;
-import core.model.storage.StoragePlane;
+import core.model.entity.Flight;
+import core.model.entity.Location;
+import core.model.entity.Passenger;
+import core.model.entity.Plane;
+import core.model.manager.implementations.ManagerFlight;
+import core.model.manager.implementations.ManagerLocation;
+import core.model.manager.implementations.ManagerPassenger;
+import core.model.manager.implementations.ManagerPlane;
+import core.model.storage.implementations.StorageFlight;
+import core.model.storage.implementations.StorageLocation;
+import core.model.storage.implementations.StoragePassenger;
+import core.model.storage.implementations.StoragePlane;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.Collections;
@@ -18,6 +22,19 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class FlightController {
+
+    // Instancias de storages y managers (podrían inyectarse si usas DI framework)
+    private static final StoragePlane storagePlane = new StoragePlane();
+    private static final ManagerPlane managerPlane = ManagerPlane.getInstance(storagePlane);
+
+    private static final StorageLocation storageLocation = new StorageLocation();
+    private static final ManagerLocation managerLocation = ManagerLocation.getInstance(storageLocation);
+
+    private static final StorageFlight storageFlight = new StorageFlight();
+    private static final ManagerFlight managerFlight = ManagerFlight.getInstance(storageFlight);
+    
+    private static final StoragePassenger storagePassenger = new StoragePassenger();
+    private static final ManagerPassenger managerPassenger = ManagerPassenger.getInstance(storagePassenger);
 
     public static Response createFlight(String id, String planeId, String departureLocation,
             String arrivalLocation, String departureDate, String hoursDurationArrival,
@@ -39,7 +56,7 @@ public class FlightController {
                 return new Response("Invalid plane ID format. Must be: 2 uppercase letters followed by 5 digits (Example: AB12345)", Status.BAD_REQUEST);
             }
 
-            Plane plane = StoragePlane.getInstance().getById(planeId);
+            Plane plane = managerPlane.getById(planeId); // Obtener el avión mediante el manager
             if (plane == null) {
                 return new Response("Plane not found", Status.NOT_FOUND);
             }
@@ -49,7 +66,7 @@ public class FlightController {
                 return new Response("Invalid departure location ID. Must be 3 uppercase letters", Status.BAD_REQUEST);
             }
 
-            Location departure = StorageLocation.getInstance().getById(departureLocation);
+            Location departure = managerLocation.getById(departureLocation); // Obtener locación de salida
             if (departure == null) {
                 return new Response("Departure location not found", Status.NOT_FOUND);
             }
@@ -59,7 +76,7 @@ public class FlightController {
                 return new Response("Invalid arrival location ID. Must be 3 uppercase letters", Status.BAD_REQUEST);
             }
 
-            Location arrival = StorageLocation.getInstance().getById(arrivalLocation);
+            Location arrival = managerLocation.getById(arrivalLocation);
             if (arrival == null) {
                 return new Response("Arrival location not found", Status.NOT_FOUND);
             }
@@ -94,7 +111,7 @@ public class FlightController {
                     return new Response("Scale location ID must be 3 uppercase letters", Status.BAD_REQUEST);
                 }
 
-                scale = StorageLocation.getInstance().getById(scaleLocation);
+                scale = managerLocation.getById(scaleLocation);
                 if (scale == null) {
                     return new Response("Scale location not found", Status.NOT_FOUND);
                 }
@@ -119,7 +136,7 @@ public class FlightController {
             Flight flight = new Flight(id, plane, departure, scale, arrival, parsedDate,
                     hoursArrival, minutesArrival, hoursScale, minutesScale);
 
-            if (!StorageFlight.getInstance().add(flight)) {
+            if (!managerFlight.add(flight)) {
                 return new Response("A flight with that ID already exists", Status.BAD_REQUEST);
             }
 
@@ -144,7 +161,7 @@ public class FlightController {
             }
 
             // Buscamos al pasajero
-            Passenger passanger = StoragePassenger.getInstance().getById(idLong);
+            Passenger passanger = managerPassenger.getById(idLong);
 
             if (passanger == null) {
                 return new Response("Passenger not found", Status.NOT_FOUND);
@@ -156,7 +173,7 @@ public class FlightController {
             }
 
             // Buscar vuelo
-            Flight flight = StorageFlight.getInstance().getById(flightID);
+            Flight flight = managerFlight.getById(flightID);
             if (flight == null) {
                 return new Response("Flight not found", Status.NOT_FOUND);
             }
@@ -209,7 +226,7 @@ public class FlightController {
             return new Response("Flight ID must follow the format XXXYYY (3 uppercase letters and 3 digits)", Status.BAD_REQUEST);
         }
 
-        Flight flight = StorageFlight.getInstance().getById(flightId);
+        Flight flight = managerFlight.getById(flightId);
         if (flight == null) {
             return new Response("Flight not found", Status.NOT_FOUND);
         }
@@ -236,8 +253,7 @@ public class FlightController {
     }
 
     public static Response getAllFlights() {
-        StorageFlight storage = StorageFlight.getInstance();
-        List<Flight> originals = storage.getFlights();
+        List<Flight> originals = managerFlight.getAll();
 
         if (originals == null || originals.isEmpty()) {
             return new Response("No locations available", Status.OK, Collections.emptyList());

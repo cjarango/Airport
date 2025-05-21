@@ -1,30 +1,16 @@
-package core.model.storage;
-
-import core.model.Flight;
+package core.model.storage.implementations;
+import core.model.storage.interfaces.StorageInterface;
+import core.model.entity.Flight;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 public class StorageFlight implements StorageInterface<Flight, String> {
 
-    private static StorageFlight instance;
+    private final List<Flight> flights;
 
-    private ArrayList<Flight> flights;
-
-    private StorageFlight() {
+    public StorageFlight() {
         this.flights = new ArrayList<>();
-    }
-
-    public static StorageFlight getInstance() {
-        if (instance == null) {
-            instance = new StorageFlight();
-        }
-        return instance;
-    }
-
-    public List<Flight> getLocations() {
-        return new ArrayList<>(this.flights);
     }
 
     /**
@@ -63,8 +49,20 @@ public class StorageFlight implements StorageInterface<Flight, String> {
         }
         return null;
     }
-    
-    public List<Flight> getFlights() {
+
+    /**
+     * Returns a defensive copy of all flights currently stored.
+     *
+     * <p>
+     * <b>Important:</b> This method returns a new {@link ArrayList} containing
+     * all flights to prevent external modifications to the internal storage.
+     * Changes to the returned list will not affect the repository's data.</p>
+     *
+     * @return A new {@link List} containing all stored flights. The list is
+     * empty if no flights are present, never {@code null}.
+     */
+    @Override
+    public List<Flight> getAll() {
         return new ArrayList<>(this.flights);
     }
 
