@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 
 public class FlightController {
 
-    // Instancias de storages y managers (podrían inyectarse si usas DI framework)
+    // Instancias de storages y managers
     private static final StoragePlane storagePlane = new StoragePlane();
     private static final ManagerPlane managerPlane = ManagerPlane.getInstance(storagePlane);
 
