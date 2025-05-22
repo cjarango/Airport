@@ -12,10 +12,13 @@ import java.util.stream.Collectors;
 
 public class PlaneController {
     
-    private static final StoragePlane storagePlane = new StoragePlane();
-    private static final ManagerPlane managerPlane = ManagerPlane.getInstance(storagePlane);
+    private final ManagerPlane managerPlane;
 
-    public static Response createPlane(String id, String brand, String model,
+    public PlaneController(ManagerPlane managerPlane) {
+        this.managerPlane = managerPlane;
+    }
+
+    public Response createPlane(String id, String brand, String model,
             String maxCapacity, String airline) {
         try {
             // Validación de parámetros
@@ -37,7 +40,7 @@ public class PlaneController {
         }
     }
 
-    public static Response getAllPlanes() {
+    public Response getAllPlanes() {
         try {
             List<Plane> planes = managerPlane.getAll();
 

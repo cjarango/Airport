@@ -8,15 +8,16 @@ import core.model.entity.Plane;
 import core.model.entity.Flight;
 import core.model.entity.Passenger;
 import core.model.entity.Location;
-import com.formdev.flatlaf.FlatDarkLaf;
+import core.controller.FlightController;
+import core.controller.LocationController;
 import core.controller.PassengerController;
+import core.controller.PlaneController;
 import core.controller.utils.Response;
 import java.awt.Color;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
-import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -34,8 +35,22 @@ public class AirportFrame extends javax.swing.JFrame {
     private ArrayList<Location> locations;
     private ArrayList<Flight> flights;
 
-    public AirportFrame() {
+    // Si inyectan los controladores al frame
+    private final PlaneController planeController;
+    private final LocationController locationController;
+    private final PassengerController passengerController;
+    private final FlightController flightController;
+
+    public AirportFrame(PlaneController planeController,
+            LocationController locationController,
+            PassengerController passengerController,
+            FlightController flightController) {
         initComponents();
+
+        this.planeController = planeController;
+        this.locationController = locationController;
+        this.passengerController = passengerController;
+        this.flightController = flightController;
 
         this.passengers = new ArrayList<>();
         this.planes = new ArrayList<>();
@@ -94,7 +109,7 @@ public class AirportFrame extends javax.swing.JFrame {
             comboMinuteDelayFlight.addItem("" + i);
         }
     }
- 
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -1430,7 +1445,7 @@ public class AirportFrame extends javax.swing.JFrame {
 
         }
         for (int i = 1; i < jTabbedPanel1.getTabCount(); i++) {
-                jTabbedPanel1.setEnabledAt(i, true);
+            jTabbedPanel1.setEnabledAt(i, true);
         }
         jTabbedPanel1.setEnabledAt(5, false);
         jTabbedPanel1.setEnabledAt(6, false);
@@ -1469,28 +1484,28 @@ public class AirportFrame extends javax.swing.JFrame {
 //        this.passengers.add(new Passenger(id, firstname, lastname, birthDate, phoneCode, phone, country));
 //        this.userSelect.addItem("" + id);
 
-          String id = txtPassengerID.getText();
-          String firstname = txtPassengerName.getText();
-          String lastname = txtLastNamePassenger.getText();
-          String year = comboBirthYear.getText();
-          String month = comboBirthMonth.getItemAt(comboBirthMonth.getSelectedIndex());
-          String day = comboBirthDay.getItemAt(comboBirthDay.getSelectedIndex());
-          String phoneCode = txtCodePhonePassenger.getText();
-          String phone = txtNumberPhonePassenger.getText();
-          String country = txtCountryPassenger.getText();
-          String birthDate = year + "-" + month + "-" + day;
+        String id = txtPassengerID.getText();
+        String firstname = txtPassengerName.getText();
+        String lastname = txtLastNamePassenger.getText();
+        String year = comboBirthYear.getText();
+        String month = comboBirthMonth.getItemAt(comboBirthMonth.getSelectedIndex());
+        String day = comboBirthDay.getItemAt(comboBirthDay.getSelectedIndex());
+        String phoneCode = txtCodePhonePassenger.getText();
+        String phone = txtNumberPhonePassenger.getText();
+        String country = txtCountryPassenger.getText();
+        String birthDate = year + "-" + month + "-" + day;
 
-          Response response = PassengerController.createPassenger(
-              id, firstname, lastname, birthDate, phoneCode, phone, country
-          );
+        Response response = passengerController.createPassenger(
+                id, firstname, lastname, birthDate, phoneCode, phone, country
+        );
 
-          if (response.getStatus() >= 500) {
-             JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.ERROR_MESSAGE);
-          } else if (response.getStatus() >= 400) {
-             JOptionPane.showMessageDialog(null, response.getMessage(), "Advertencia " + response.getStatus(), JOptionPane.WARNING_MESSAGE);
-          } else {
-             JOptionPane.showMessageDialog(null, response.getMessage(), "Pasajero creado", JOptionPane.INFORMATION_MESSAGE);
-             
+        if (response.getStatus() >= 500) {
+            JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.ERROR_MESSAGE);
+        } else if (response.getStatus() >= 400) {
+            JOptionPane.showMessageDialog(null, response.getMessage(), "Advertencia " + response.getStatus(), JOptionPane.WARNING_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(null, response.getMessage(), "Pasajero creado", JOptionPane.INFORMATION_MESSAGE);
+
             txtPassengerID.setText("");
             txtPassengerName.setText("");
             txtLastNamePassenger.setText("");
@@ -1500,7 +1515,7 @@ public class AirportFrame extends javax.swing.JFrame {
             txtCodePhonePassenger.setText("");
             txtNumberPhonePassenger.setText("");
             txtCountryPassenger.setText("");
-            
+
             userSelect.addItem(id);// no sé donde va esto
         }
     }//GEN-LAST:event_btnRegisterPassengerActionPerformed
@@ -1715,11 +1730,10 @@ public class AirportFrame extends javax.swing.JFrame {
     private void userSelectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userSelectActionPerformed
         try {
             String id = userSelect.getSelectedItem().toString();
-            if (! id.equals(userSelect.getItemAt(0))) {
+            if (!id.equals(userSelect.getItemAt(0))) {
                 txtIDUpdate.setText(id);
                 txtIDFligth.setText(id);
-            }
-            else{
+            } else {
                 txtIDUpdate.setText("");
                 txtIDFligth.setText("");
             }

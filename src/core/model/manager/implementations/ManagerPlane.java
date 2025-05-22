@@ -30,6 +30,13 @@ public class ManagerPlane implements ManagerInterface<Plane, String> {
         }
         return instance;
     }
+    
+    public static ManagerPlane getInstance() {
+        if (instance == null) {
+            return null;
+        }
+        return instance;
+    }
 
     /**
      * Agrega un nuevo avión al sistema si no existe otro con el mismo ID.

@@ -4,7 +4,6 @@ import core.controller.utils.Response;
 import core.controller.utils.Status;
 import core.model.entity.Passenger;
 import core.model.manager.implementations.ManagerPassenger;
-import core.model.storage.implementations.StoragePassenger;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.List;
@@ -12,14 +11,17 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class PassengerController {
-    
-    private static final StoragePassenger storagePassenger = new StoragePassenger();
-    private static final ManagerPassenger managerPassenger = ManagerPassenger.getInstance(storagePassenger);
 
-    private static Response validatePassengerData(String id, String firstname,
+    private final ManagerPassenger managerPassenger;
+
+    public PassengerController(ManagerPassenger managerPassenger) {
+        this.managerPassenger = managerPassenger;
+    }
+
+    private Response validatePassengerData(String id, String firstname,
             String lastname, String birthDate, String countryPhoneCode,
             String phone, String country) {
-        
+
         // Validar ID
         long idLong;
         try {
@@ -76,33 +78,33 @@ public class PassengerController {
         return null;
     }
 
-    private static Passenger parsePassenger(String id, String firstname,
+    private Passenger parsePassenger(String id, String firstname,
             String lastname, String birthDate, String countryPhoneCode,
             String phone, String country) {
-        
+
         return new Passenger(
-            Long.parseLong(id),
-            firstname,
-            lastname,
-            LocalDate.parse(birthDate),
-            Integer.parseInt(countryPhoneCode),
-            Long.parseLong(phone),
-            country
+                Long.parseLong(id),
+                firstname,
+                lastname,
+                LocalDate.parse(birthDate),
+                Integer.parseInt(countryPhoneCode),
+                Long.parseLong(phone),
+                country
         );
     }
 
-    public static Response createPassenger(String id, String firstname,
+    public Response createPassenger(String id, String firstname,
             String lastname, String birthDate, String countryPhoneCode,
             String phone, String country) {
-        
+
         try {
-            Response validationResponse = validatePassengerData(id, firstname, lastname, 
+            Response validationResponse = validatePassengerData(id, firstname, lastname,
                     birthDate, countryPhoneCode, phone, country);
             if (validationResponse != null) {
                 return validationResponse;
             }
 
-            Passenger newPassenger = parsePassenger(id, firstname, lastname, 
+            Passenger newPassenger = parsePassenger(id, firstname, lastname,
                     birthDate, countryPhoneCode, phone, country);
 
             if (!managerPassenger.add(newPassenger)) {
@@ -115,18 +117,18 @@ public class PassengerController {
         }
     }
 
-    public static Response updatePassenger(String id, String firstname,
+    public Response updatePassenger(String id, String firstname,
             String lastname, String birthDate, String countryPhoneCode,
             String phone, String country) {
-        
+
         try {
-            Response validationResponse = validatePassengerData(id, firstname, lastname, 
+            Response validationResponse = validatePassengerData(id, firstname, lastname,
                     birthDate, countryPhoneCode, phone, country);
             if (validationResponse != null) {
                 return validationResponse;
             }
 
-            Passenger updatedPassenger = parsePassenger(id, firstname, lastname, 
+            Passenger updatedPassenger = parsePassenger(id, firstname, lastname,
                     birthDate, countryPhoneCode, phone, country);
 
             if (!managerPassenger.update(updatedPassenger)) {
@@ -139,10 +141,10 @@ public class PassengerController {
         }
     }
 
-    public static Response getAllPassengers() {
+    public Response getAllPassengers() {
         try {
             List<Passenger> passengers = managerPassenger.getAll();
-            
+
             if (passengers == null || passengers.isEmpty()) {
                 return new Response("No passengers available", Status.OK, List.of());
             }
@@ -151,7 +153,7 @@ public class PassengerController {
                     .filter(Objects::nonNull)
                     .map(Passenger::clone)
                     .collect(Collectors.toList());
-                    
+
             return new Response("Passengers retrieved successfully", Status.OK, copies);
         } catch (Exception e) {
             return new Response("Error retrieving passengers", Status.INTERNAL_SERVER_ERROR);
