@@ -36,6 +36,14 @@ public class ManagerFlight implements ManagerInterface<Flight, String> {
         }
         return instance;
     }
+    
+    public static ManagerFlight getInstance() {
+        if (instance == null) {
+            return null;
+        }
+        return instance;
+    }
+    
 
     /**
      * Agrega un nuevo vuelo al sistema si no existe otro con el mismo ID.

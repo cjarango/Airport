@@ -10,9 +10,6 @@ import core.model.manager.implementations.ManagerFlight;
 import core.model.manager.implementations.ManagerLocation;
 import core.model.manager.implementations.ManagerPassenger;
 import core.model.manager.implementations.ManagerPlane;
-import core.model.storage.implementations.StorageFlight;
-import core.model.storage.implementations.StorageLocation;
-import core.model.storage.implementations.StoragePassenger;
 import core.model.storage.implementations.StoragePlane;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
@@ -23,20 +20,28 @@ import java.util.stream.Collectors;
 
 public class FlightController {
 
+
     // Instancias de storages y managers
-    private static final StoragePlane storagePlane = new StoragePlane();
-    private static final ManagerPlane managerPlane = ManagerPlane.getInstance(storagePlane);
+   
+    private final ManagerFlight managerFlight;
+    private final ManagerPlane managerPlane;
+    private final ManagerLocation managerLocation;
+    private final ManagerPassenger managerPassenger;
 
-    private static final StorageLocation storageLocation = new StorageLocation();
-    private static final ManagerLocation managerLocation = ManagerLocation.getInstance(storageLocation);
 
-    private static final StorageFlight storageFlight = new StorageFlight();
-    private static final ManagerFlight managerFlight = ManagerFlight.getInstance(storageFlight);
-    
-    private static final StoragePassenger storagePassenger = new StoragePassenger();
-    private static final ManagerPassenger managerPassenger = ManagerPassenger.getInstance(storagePassenger);
+    public FlightController(
+            ManagerFlight managerFlight,
+            ManagerPlane managerPlane,
+            ManagerLocation managerLocation,
+            ManagerPassenger managerPassenger
+    ) {
+        this.managerFlight = managerFlight;
+        this.managerPlane = managerPlane;
+        this.managerLocation = managerLocation;
+        this.managerPassenger = managerPassenger;
+    }
 
-    public static Response createFlight(String id, String planeId, String departureLocation,
+    public Response createFlight(String id, String planeId, String departureLocation,
             String arrivalLocation, String departureDate, String hoursDurationArrival,
             String minutesDurationArrival, String scaleLocation,
             String hoursDurationScale, String minutesDurationScale) {
@@ -147,7 +152,7 @@ public class FlightController {
         }
     }
 
-    public static Response addPassenger(String PassengerID, String flightID) {
+    public Response addPassenger(String PassengerID, String flightID) {
         try {
             // Validar ID del pasajero
             long idLong;
@@ -219,7 +224,7 @@ public class FlightController {
      * during delay</li>
      * </ul>
      */
-    public static Response delayFlight(String flightId, String delayHours, String delayMinutes) {
+    public  Response delayFlight(String flightId, String delayHours, String delayMinutes) {
 
         // Validar ID de vuelo
         if (flightId == null || !flightId.matches("^[A-Z]{3}\\d{3}$")) {
@@ -252,7 +257,7 @@ public class FlightController {
         }
     }
 
-    public static Response getAllFlights() {
+    public Response getAllFlights() {
         List<Flight> originals = managerFlight.getAll();
 
         if (originals == null || originals.isEmpty()) {

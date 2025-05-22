@@ -37,6 +37,13 @@ public class ManagerPassenger implements ManagerInterface<Passenger, Long> {
         }
         return instance;
     }
+    
+     public static ManagerPassenger getInstance() {
+        if (instance == null) {
+            return null;
+        }
+        return instance;
+    }
 
     /**
      * Agrega un nuevo pasajero al sistema si no existe otro con el mismo ID.

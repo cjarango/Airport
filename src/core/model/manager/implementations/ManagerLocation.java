@@ -36,6 +36,13 @@ public class ManagerLocation implements ManagerInterface<Location, String> {
         }
         return instance;
     }
+    
+    public static ManagerLocation getInstance() {
+        if (instance == null) {
+            return null;
+        }
+        return instance;
+    }
 
     /**
      * Agrega una nueva ubicación al sistema si no existe otra con el mismo ID.
