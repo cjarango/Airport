@@ -65,6 +65,10 @@ public class AirportFrame extends javax.swing.JFrame {
         this.generateHours();
         this.generateMinutes();
         this.blockPanels();
+        
+        for (int i = 1; i < jTabbedPanel1.getTabCount(); i++) {
+            jTabbedPanel1.setEnabledAt(i, false);
+        }
     }
 
     private void blockPanels() {
@@ -124,9 +128,9 @@ public class AirportFrame extends javax.swing.JFrame {
         jButton13 = new javax.swing.JButton();
         jTabbedPanel1 = new javax.swing.JTabbedPane();
         panelAdministration = new javax.swing.JPanel();
-        radioBtnUser = new javax.swing.JRadioButton();
-        radioBtnAdministrator = new javax.swing.JRadioButton();
         comboUserSelect = new javax.swing.JComboBox<>();
+        radioBtnAdmi = new javax.swing.JRadioButton();
+        radioBtnUser = new javax.swing.JRadioButton();
         panelPassengerRegistration = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -309,24 +313,6 @@ public class AirportFrame extends javax.swing.JFrame {
 
         panelAdministration.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        radioBtnUser.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
-        radioBtnUser.setText("User");
-        radioBtnUser.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                radioBtnUserActionPerformed(evt);
-            }
-        });
-        panelAdministration.add(radioBtnUser, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 230, -1, -1));
-
-        radioBtnAdministrator.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
-        radioBtnAdministrator.setText("Administrator");
-        radioBtnAdministrator.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                radioBtnAdministratorActionPerformed(evt);
-            }
-        });
-        panelAdministration.add(radioBtnAdministrator, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 164, -1, -1));
-
         comboUserSelect.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
         comboUserSelect.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select User" }));
         comboUserSelect.addActionListener(new java.awt.event.ActionListener() {
@@ -335,6 +321,24 @@ public class AirportFrame extends javax.swing.JFrame {
             }
         });
         panelAdministration.add(comboUserSelect, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 300, 130, -1));
+
+        radioBtnAdmi.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
+        radioBtnAdmi.setText("Administratior");
+        radioBtnAdmi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                radioBtnAdmiActionPerformed(evt);
+            }
+        });
+        panelAdministration.add(radioBtnAdmi, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 160, -1, -1));
+
+        radioBtnUser.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
+        radioBtnUser.setText("User");
+        radioBtnUser.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                radioBtnUserActionPerformed(evt);
+            }
+        });
+        panelAdministration.add(radioBtnUser, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 230, -1, -1));
 
         jTabbedPanel1.addTab("Administration", panelAdministration);
 
@@ -1462,37 +1466,7 @@ public class AirportFrame extends javax.swing.JFrame {
     private void panelRound2MouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelRound2MouseDragged
         this.setLocation(this.getLocation().x + evt.getX() - x, this.getLocation().y + evt.getY() - y);
     }//GEN-LAST:event_panelRound2MouseDragged
-
-    private void radioBtnAdministratorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioBtnAdministratorActionPerformed
-        //No tocar
-        if (radioBtnUser.isSelected()) {
-            radioBtnUser.setSelected(false);
-            comboUserSelect.setSelectedIndex(0);
-
-        }
-        for (int i = 1; i < jTabbedPanel1.getTabCount(); i++) {
-            jTabbedPanel1.setEnabledAt(i, true);
-        }
-        jTabbedPanel1.setEnabledAt(5, false);
-        jTabbedPanel1.setEnabledAt(6, false);
-    }//GEN-LAST:event_radioBtnAdministratorActionPerformed
-
-    private void radioBtnUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioBtnUserActionPerformed
-        //No tocar
-        if (radioBtnAdministrator.isSelected()) {
-            radioBtnAdministrator.setSelected(false);
-        }
-        for (int i = 1; i < jTabbedPanel1.getTabCount(); i++) {
-
-            jTabbedPanel1.setEnabledAt(i, false);
-
-        }
-        jTabbedPanel1.setEnabledAt(9, true);
-        jTabbedPanel1.setEnabledAt(5, true);
-        jTabbedPanel1.setEnabledAt(6, true);
-        jTabbedPanel1.setEnabledAt(7, true);
-        jTabbedPanel1.setEnabledAt(11, true);
-    }//GEN-LAST:event_radioBtnUserActionPerformed
+                                    
 
     private void btnRegisterPassengerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegisterPassengerActionPerformed
         // TODO add your handling code here:
@@ -2089,6 +2063,36 @@ public class AirportFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_comboHoursDelayFlightActionPerformed
 
+    private void radioBtnUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioBtnUserActionPerformed
+        // TODO add your handling code here:
+        if (radioBtnAdmi.isSelected()){
+            radioBtnAdmi.setSelected(false);    
+        }
+        for (int i = 1; i < jTabbedPanel1.getTabCount(); i++) {
+            jTabbedPanel1.setEnabledAt(i, false);
+        }
+        jTabbedPanel1.setEnabledAt(4, true);
+        jTabbedPanel1.setEnabledAt(5, true);
+        jTabbedPanel1.setEnabledAt(6, true); 
+        jTabbedPanel1.setEnabledAt(8, true); 
+        jTabbedPanel1.setEnabledAt(10, true); 
+    }//GEN-LAST:event_radioBtnUserActionPerformed
+
+    private void radioBtnAdmiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioBtnAdmiActionPerformed
+        // TODO add your handling code here:
+                //No tocar
+        if (radioBtnUser.isSelected()) {
+            radioBtnUser.setSelected(false);
+            comboUserSelect.setSelectedIndex(0);
+        }
+        for (int i = 1; i < jTabbedPanel1.getTabCount(); i++) {
+            jTabbedPanel1.setEnabledAt(i, true);
+        }
+        jTabbedPanel1.setEnabledAt(5, false);
+        jTabbedPanel1.setEnabledAt(6, false);
+        jTabbedPanel1.setEnabledAt(4, false); 
+    }//GEN-LAST:event_radioBtnAdmiActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> DAY5;
@@ -2196,7 +2200,7 @@ public class AirportFrame extends javax.swing.JFrame {
     private javax.swing.JPanel panelShowMyFligths;
     private javax.swing.JPanel panelUpdateInfo;
     private javax.swing.JPanel panleAirplaneRegistration;
-    private javax.swing.JRadioButton radioBtnAdministrator;
+    private javax.swing.JRadioButton radioBtnAdmi;
     private javax.swing.JRadioButton radioBtnUser;
     private javax.swing.JTable tableShowAllFlights;
     private javax.swing.JTable tableShowAllLocations;
