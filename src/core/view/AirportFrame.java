@@ -64,6 +64,10 @@ public class AirportFrame extends javax.swing.JFrame {
         this.generateHours();
         this.generateMinutes();
         this.blockPanels();
+        
+        for (int i = 1; i < jTabbedPanel1.getTabCount(); i++) {
+            jTabbedPanel1.setEnabledAt(i, false);
+        }
     }
 
     private void blockPanels() {
@@ -1461,13 +1465,13 @@ public class AirportFrame extends javax.swing.JFrame {
         if (user.isSelected()) {
             user.setSelected(false);
             comboUserSelect.setSelectedIndex(0);
-
         }
         for (int i = 1; i < jTabbedPanel1.getTabCount(); i++) {
             jTabbedPanel1.setEnabledAt(i, true);
         }
         jTabbedPanel1.setEnabledAt(5, false);
         jTabbedPanel1.setEnabledAt(6, false);
+        jTabbedPanel1.setEnabledAt(4, false);
     }//GEN-LAST:event_administratorActionPerformed
 
     private void userActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userActionPerformed
@@ -1475,15 +1479,13 @@ public class AirportFrame extends javax.swing.JFrame {
             administrator.setSelected(false);
         }
         for (int i = 1; i < jTabbedPanel1.getTabCount(); i++) {
-
             jTabbedPanel1.setEnabledAt(i, false);
-
         }
-        jTabbedPanel1.setEnabledAt(9, true);
-        jTabbedPanel1.setEnabledAt(5, true);
-        jTabbedPanel1.setEnabledAt(6, true);
-        jTabbedPanel1.setEnabledAt(7, true);
-        jTabbedPanel1.setEnabledAt(11, true);
+        jTabbedPanel1.setEnabledAt(4, true); 
+        jTabbedPanel1.setEnabledAt(5, true); 
+        jTabbedPanel1.setEnabledAt(6, true); 
+        jTabbedPanel1.setEnabledAt(8, true); 
+        jTabbedPanel1.setEnabledAt(10, true);
     }//GEN-LAST:event_userActionPerformed
 
     private void btnRegisterPassengerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegisterPassengerActionPerformed
