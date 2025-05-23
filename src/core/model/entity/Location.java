@@ -30,7 +30,7 @@ public class Location {
         return new Location(
                 this.airportId,
                 this.airportName,
-                this.airportCountry,
+                this.airportCity,
                 this.airportCountry,
                 this.airportLatitude,
                 this.airportLongitude

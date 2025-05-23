@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 public class LocationController {
 
-    private final ManagerLocation managerLocation;
+    private final ManagerLocation managerLocation ;
 
     public LocationController(ManagerLocation managerLocation) {
         this.managerLocation = managerLocation;

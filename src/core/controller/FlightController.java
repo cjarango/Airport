@@ -261,7 +261,7 @@ public class FlightController {
         List<Flight> originals = managerFlight.getAll();
 
         if (originals == null || originals.isEmpty()) {
-            return new Response("No locations available", Status.OK, Collections.emptyList());
+            return new Response("No Flight available", Status.OK, Collections.emptyList());
         }
 
         try {
@@ -269,7 +269,7 @@ public class FlightController {
                     .filter(Objects::nonNull)
                     .map(Flight::clone)
                     .collect(Collectors.toList());
-            return new Response("Locations retrieved successfully", Status.OK, copies);
+            return new Response("Flight retrieved successfully", Status.OK, copies);
         } catch (Exception e) {
             return new Response("Error cloning locations", Status.INTERNAL_SERVER_ERROR);
         }
