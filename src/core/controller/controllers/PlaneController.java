@@ -1,21 +1,30 @@
-package core.controller;
+package core.controller.controllers;
 
+import core.controller.observers.implementations.ObserverPlane;
 import core.controller.utils.Response;
 import core.controller.utils.Status;
 import core.model.entity.Plane;
 import core.model.manager.implementations.ManagerPlane;
-import core.model.storage.implementations.StoragePlane;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import javax.swing.JTable;
 
 public class PlaneController {
     
     private final ManagerPlane managerPlane;
+    private ObserverPlane observer;
 
     public PlaneController(ManagerPlane managerPlane) {
         this.managerPlane = managerPlane;
+        this.observer = null;
+    }
+
+    public void setObserver(JTable table) {
+        if(this.observer == null){
+            this.observer = ObserverPlane.getInstance(table);
+        }
     }
 
     public Response createPlane(String id, String brand, String model,
@@ -33,6 +42,11 @@ public class PlaneController {
             if (!managerPlane.add(newPlane)) {
                 return new Response("Plane with ID " + id + " already exists", Status.BAD_REQUEST);
             }
+            
+            if(observer != null){
+                observer.update(managerPlane.getAll());
+            }
+            
             return new Response("Plane created successfully", Status.CREATED, newPlane);
 
         } catch (Exception e) {

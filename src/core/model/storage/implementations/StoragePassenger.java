@@ -1,5 +1,6 @@
 package core.model.storage.implementations;
 
+import core.model.entity.Flight;
 import core.model.entity.Passenger;
 import core.model.storage.interfaces.UpdatableStorageInterface;
 import java.util.ArrayList;
@@ -7,14 +8,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class StoragePassenger implements UpdatableStorageInterface<Passenger, Long>  {
+public class StoragePassenger implements UpdatableStorageInterface<Passenger, Long> {
 
     private final List<Passenger> passengers;
 
     public StoragePassenger() {
         this.passengers = new ArrayList<>();
     }
-
 
     /**
      * Returns a defensive copy of all passengers currently stored.
@@ -30,6 +30,11 @@ public class StoragePassenger implements UpdatableStorageInterface<Passenger, Lo
     @Override
     public List<Passenger> getAll() {
         return new ArrayList<>(this.passengers);
+    }
+    
+    @Override
+    public List<Flight> getAllFligts(Passenger passenger) {
+        return new ArrayList<>(passenger.getFlights());
     }
 
     /**
@@ -89,4 +94,31 @@ public class StoragePassenger implements UpdatableStorageInterface<Passenger, Lo
             return true;
         }
     }
+
+
+    @Override
+    public boolean addFlight(Passenger passenger, Flight flight) {
+        if (passenger == null || flight == null) {
+            return false;
+        }
+        Passenger inList = getById(passenger.getId());
+        if (inList == null) {
+            return false;
+        }
+        
+        for (Flight p : inList.getFlights()) {
+            if (p.getId().equals(flight.getId())) {
+                return false;
+            }
+        }
+
+        for (Passenger f : flight.getPassengers()) {
+            if (f.getId() == passenger.getId()) {
+                return false;
+            }
+        }
+        passenger.addFlight(flight);
+        return true;
+    }
+
 }

@@ -1,7 +1,9 @@
-package core.controller;
+package core.controller.controllers;
 
+import core.controller.observers.implementations.ObserverPassenger;
 import core.controller.utils.Response;
 import core.controller.utils.Status;
+import core.model.entity.Flight;
 import core.model.entity.Passenger;
 import core.model.manager.implementations.ManagerPassenger;
 import java.time.LocalDate;
@@ -9,13 +11,22 @@ import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import javax.swing.JTable;
 
 public class PassengerController {
 
     private final ManagerPassenger managerPassenger;
+    private ObserverPassenger observer;
 
     public PassengerController(ManagerPassenger managerPassenger) {
         this.managerPassenger = managerPassenger;
+        this.observer = null;
+    }
+
+    public void setObserver(JTable table) {
+        if (this.observer == null) {
+            this.observer = ObserverPassenger.getInstance(table);
+        }
     }
 
     private Response validatePassengerData(String id, String firstname,
@@ -110,6 +121,11 @@ public class PassengerController {
             if (!managerPassenger.add(newPassenger)) {
                 return new Response("A passenger with that id already exists", Status.BAD_REQUEST);
             }
+
+            if (observer != null) {
+                observer.update(managerPassenger.getAll());
+            }
+
             return new Response("Passenger created successfully", Status.CREATED);
 
         } catch (Exception e) {
@@ -134,6 +150,11 @@ public class PassengerController {
             if (!managerPassenger.update(updatedPassenger)) {
                 return new Response("Passenger not found", Status.NOT_FOUND);
             }
+
+            if (observer != null) {
+                observer.update(managerPassenger.getAll());
+            }
+
             return new Response("Passenger updated successfully", Status.OK);
 
         } catch (Exception e) {
@@ -159,4 +180,35 @@ public class PassengerController {
             return new Response("Error retrieving passengers", Status.INTERNAL_SERVER_ERROR);
         }
     }
+
+    public Response getFlightsByPassengerId(String id) {
+        try {
+            long idLong;
+            try {
+                idLong = Long.parseLong(id);
+                if (idLong < 0 || id.length() > 15) {
+                    return new Response("Id must be >= 0 and at most 15 digits", Status.BAD_REQUEST);
+                }
+            } catch (NumberFormatException ex) {
+                return new Response("Id must be numeric", Status.BAD_REQUEST);
+            }
+
+            Passenger passenger = managerPassenger.getById(idLong);
+            if (passenger == null) {
+                return new Response("Passenger not found", Status.NOT_FOUND);
+            }
+
+            List<Flight> flights = passenger.getFlights();
+            List<Flight> copies = flights.stream()
+                    .filter(Objects::nonNull)
+                    .map(Flight::clone)
+                    .collect(Collectors.toList());
+
+            return new Response("Flights retrieved successfully", Status.OK, copies);
+
+        } catch (Exception e) {
+            return new Response("Error retrieving flights", Status.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }

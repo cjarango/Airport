@@ -77,27 +77,33 @@ public class Flight {
     }
     
     public Flight clone() {
-    return new Flight(
-        this.id,
-        this.plane,
-        this.departureLocation,
-        this.scaleLocation,
-        this.arrivalLocation,
-        this.departureDate,
-        this.hoursDurationArrival,
-        this.minutesDurationArrival,
-        this.hoursDurationScale,
-        this.minutesDurationScale,
-        false // <- evitar registrar el vuelo en el avión
-    );
+        return new Flight(
+                this.id,
+                this.plane,
+                this.departureLocation,
+                this.scaleLocation,
+                this.arrivalLocation,
+                this.departureDate,
+                this.hoursDurationArrival,
+                this.minutesDurationArrival,
+                this.hoursDurationScale,
+                this.minutesDurationScale,
+                false // <- evitar registrar el vuelo en el avión
+        );
 }
 
     public void addPassenger(Passenger passenger) {
+    if (!this.passengers.contains(passenger)) {
         this.passengers.add(passenger);
     }
+}
 
     public String getId() {
         return id;
+    }
+
+    public ArrayList<Passenger> getPassengers() {
+        return passengers;
     }
 
     public Location getDepartureLocation() {
