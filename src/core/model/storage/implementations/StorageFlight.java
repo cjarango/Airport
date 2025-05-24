@@ -1,11 +1,13 @@
 package core.model.storage.implementations;
-import core.model.storage.interfaces.StorageInterface;
+
 import core.model.entity.Flight;
+import core.model.entity.Passenger;
+import core.model.storage.interfaces.FlightExtendedInterface;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public class StorageFlight implements StorageInterface<Flight, String> {
+public class StorageFlight implements FlightExtendedInterface<Flight, String> {
 
     private final List<Flight> flights;
 
@@ -31,6 +33,11 @@ public class StorageFlight implements StorageInterface<Flight, String> {
         // Ordenar por fecha/hora de salida (más antiguo a más nuevo)
         this.flights.sort(Comparator.comparing(Flight::getDepartureDate));
         return true;
+    }
+
+    @Override
+    public List<Passenger> getAllPassenger(Flight flight) {
+        return new ArrayList<>(flight.getPassengers());
     }
 
     /**
@@ -64,6 +71,33 @@ public class StorageFlight implements StorageInterface<Flight, String> {
     @Override
     public List<Flight> getAll() {
         return new ArrayList<>(this.flights);
+    }
+
+    @Override
+    public boolean addPassenger(Flight flight, Passenger passenger) {
+        if (passenger == null || flight == null) {
+            return false;
+        }
+        Flight inList = getById(flight.getId());
+        if (inList == null) {
+            return false;
+        }
+        // Verificar si el pasajero ya está en la lista de pasajeros del vuelo
+        for (Passenger p : inList.getPassengers()) {
+            if (p.getId() == passenger.getId()) {
+                return false;
+            }
+        }
+
+        for (Flight f : passenger.getFlights()) {
+            if (f.getId().equals(flight.getId())) {
+                return false;
+            }
+        }
+
+        passenger.addFlight(flight);   // Ya no se recursiona
+        flight.addPassenger(passenger); // Ya no se recursiona
+        return true;
     }
 
 }

@@ -2,7 +2,7 @@ package core.model.manager.implementations;
 
 import core.model.entity.Location;
 import core.model.manager.interfaces.ManagerInterface;
-import core.model.storage.implementations.StorageLocation;
+import core.model.observables.implementations.ObservableLocation;
 import core.model.storage.interfaces.StorageInterface;
 import java.util.List;
 
@@ -20,32 +20,40 @@ public class ManagerLocation implements ManagerInterface<Location, String> {
 
     private static ManagerLocation instance;
     private final StorageInterface<Location, String> storage;
+    private final ObservableLocation observable;
 
-    private ManagerLocation(StorageInterface<Location, String> storage) {
+    private ManagerLocation(StorageInterface<Location, String> storage, ObservableLocation observable) {
         this.storage = storage;
+        this.observable = observable;
     }
 
     /**
-     * Devuelve la instancia única de ManagerLocation.Si no existe, la crea.
-     * @param storage
+     * Devuelve la instancia única de ManagerLocation. Si no existe, la crea.
+     *
+     * @param storage la interfaz de almacenamiento usada para persistencia.
+     * @param observable la instancia de ObservableLocation para notificaciones.
      * @return Instancia única de {@code ManagerLocation}.
      */
-    public static ManagerLocation getInstance(StorageInterface<Location, String> storage) {
+    public static ManagerLocation getInstance(StorageInterface<Location, String> storage, ObservableLocation observable) {
         if (instance == null) {
-            instance = new ManagerLocation(storage);
+            instance = new ManagerLocation(storage, observable);
         }
         return instance;
     }
-    
+
+    /**
+     * Devuelve la instancia única de ManagerLocation si ya fue creada, o null.
+     *
+     * @return Instancia única de {@code ManagerLocation} o {@code null} si no
+     * existe.
+     */
     public static ManagerLocation getInstance() {
-        if (instance == null) {
-            return null;
-        }
         return instance;
     }
 
     /**
      * Agrega una nueva ubicación al sistema si no existe otra con el mismo ID.
+     * Notifica a los observadores si se agregó correctamente.
      *
      * @param location La ubicación a agregar.
      * @return {@code true} si se agregó correctamente, {@code false} si ya
@@ -53,7 +61,12 @@ public class ManagerLocation implements ManagerInterface<Location, String> {
      */
     @Override
     public boolean add(Location location) {
-        return storage.add(location);
+        boolean added = storage.add(location);
+        if (added) {
+            List<Location> locations = storage.getAll(); // obtener lista actualizada
+            observable.notifyObservers(locations);       // pasar la lista actualizada
+        }
+        return added;
     }
 
     /**
@@ -78,5 +91,4 @@ public class ManagerLocation implements ManagerInterface<Location, String> {
     public List<Location> getAll() {
         return storage.getAll();
     }
-
 }

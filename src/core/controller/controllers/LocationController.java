@@ -1,5 +1,6 @@
-package core.controller;
+package core.controller.controllers;
 
+import core.controller.observers.implementations.ObserverLocation;
 import core.controller.utils.Response;
 import core.controller.utils.Status;
 import core.model.entity.Location;
@@ -8,13 +9,22 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import javax.swing.JTable;
 
 public class LocationController {
 
-    private final ManagerLocation managerLocation ;
+    private final ManagerLocation managerLocation;
+    private ObserverLocation observer;
 
     public LocationController(ManagerLocation managerLocation) {
         this.managerLocation = managerLocation;
+        this.observer = null;
+    }
+
+    public void setObserver(JTable table) {
+        if(this.observer == null){
+            this.observer = ObserverLocation.getInstance(table);
+        }
     }
 
     public Response createLocation(String id, String name, String city,
@@ -71,6 +81,12 @@ public class LocationController {
             if (!managerLocation.add(newLocation)) {
                 return new Response("An location with that id already exists", Status.BAD_REQUEST);
             }
+            
+            if(observer != null){
+                observer.update(managerLocation.getAll());
+            }
+            
+            
             return new Response("Location created successfully", Status.CREATED);
 
         } catch (Exception ex) {

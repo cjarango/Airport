@@ -2,6 +2,7 @@ package core.model.manager.implementations;
 
 import core.model.entity.Plane;
 import core.model.manager.interfaces.ManagerInterface;
+import core.model.observables.implementations.ObservablePlane;
 import core.model.storage.interfaces.StorageInterface;
 import java.util.List;
 
@@ -12,42 +13,63 @@ import java.util.List;
  *
  * <p>
  * Este manager actúa como intermediario entre los controladores y la capa de
- * almacenamiento, ocultando los detalles de implementación del
- * almacenamiento.</p>
+ * almacenamiento, ocultando los detalles de implementación del almacenamiento.
+ * Además, notifica a los observadores ante cambios relevantes en la colección
+ * de aviones.
+ * </p>
  */
 public class ManagerPlane implements ManagerInterface<Plane, String> {
 
     private static ManagerPlane instance;
     private final StorageInterface<Plane, String> storage;
+    private final ObservablePlane observable;
 
-    private ManagerPlane(StorageInterface<Plane, String> storage) {
+    private ManagerPlane(StorageInterface<Plane, String> storage, ObservablePlane observable) {
         this.storage = storage;
+        this.observable = observable;
     }
 
-    public static synchronized ManagerPlane getInstance(StorageInterface<Plane, String> storage) {
+    /**
+     * Devuelve la instancia única de ManagerPlane. Si no existe, la crea con el
+     * Storage y Observable proporcionados.
+     *
+     * @param storage Implementación concreta de almacenamiento.
+     * @param observable Instancia para notificar cambios a observadores.
+     * @return Instancia única de {@code ManagerPlane}.
+     */
+    public static synchronized ManagerPlane getInstance(StorageInterface<Plane, String> storage, ObservablePlane observable) {
         if (instance == null) {
-            instance = new ManagerPlane(storage);
-        }
-        return instance;
-    }
-    
-    public static ManagerPlane getInstance() {
-        if (instance == null) {
-            return null;
+            instance = new ManagerPlane(storage, observable);
         }
         return instance;
     }
 
     /**
+     * Devuelve la instancia única de ManagerPlane si ya fue creada, o null.
+     *
+     * @return Instancia única de {@code ManagerPlane} o {@code null} si no
+     * existe.
+     */
+    public static ManagerPlane getInstance() {
+        return instance;
+    }
+
+    /**
      * Agrega un nuevo avión al sistema si no existe otro con el mismo ID.
+     * Notifica a los observadores si se agregó correctamente.
      *
      * @param plane El avión a agregar.
      * @return {@code true} si se agregó correctamente, {@code false} si ya
-     * existía una con el mismo ID.
+     * existía uno con el mismo ID.
      */
     @Override
     public boolean add(Plane plane) {
-        return storage.add(plane);
+        boolean added = storage.add(plane);
+        if (added) {
+            List<Plane> planes = storage.getAll();  // obtener la lista actualizada
+            observable.notifyObservers(planes);    // notificar pasando la lista
+        }
+        return added;
     }
 
     /**
@@ -72,5 +94,4 @@ public class ManagerPlane implements ManagerInterface<Plane, String> {
     public List<Plane> getAll() {
         return storage.getAll();
     }
-
 }

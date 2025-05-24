@@ -1,7 +1,10 @@
 package core.model.manager.implementations;
 
+import core.model.entity.Flight;
 import core.model.entity.Passenger;
 import core.model.manager.interfaces.ManagerInterface;
+import core.model.observables.implementations.ObservablePassenger;
+import core.model.observables.implementations.ObservablePassengerFlight;
 import core.model.storage.interfaces.UpdatableStorageInterface;
 import java.util.List;
 
@@ -13,48 +16,67 @@ import java.util.List;
  * <p>
  * Este manager actúa como intermediario entre los controladores y la capa de
  * almacenamiento, ocultando los detalles de implementación del almacenamiento.
+ * Además, notifica a los observadores ante cambios relevantes en la colección
+ * de pasajeros.
  * </p>
  */
 public class ManagerPassenger implements ManagerInterface<Passenger, Long> {
 
     private static ManagerPassenger instance;
-     private final UpdatableStorageInterface<Passenger, Long> storage;
+    private final UpdatableStorageInterface<Passenger, Long> storage;
+    private final ObservablePassenger observable;
+    private final ObservablePassengerFlight observableFlights;
 
-    private ManagerPassenger(UpdatableStorageInterface<Passenger, Long> storage) {
+    private ManagerPassenger(UpdatableStorageInterface<Passenger, Long> storage, ObservablePassenger observable,
+            ObservablePassengerFlight observableFligths) {
         this.storage = storage;
+        this.observable = observable;
+        this.observableFlights = observableFligths;
     }
 
     /**
-     * Devuelve la instancia única de ManagerPassenger. Si no existe, la crea
-     * con el Storage proporcionado.
+     * Devuelve la instancia única de ManagerPassenger.Si no existe, la crea
+ con el Storage y Observable proporcionados.
      *
      * @param storage Implementación concreta de almacenamiento.
+     * @param observable Instancia para notificar cambios a observadores.
+     * @param observableFligths
      * @return Instancia única de {@code ManagerPassenger}.
      */
-    public static synchronized ManagerPassenger getInstance(UpdatableStorageInterface<Passenger, Long> storage) {
+    public static synchronized ManagerPassenger getInstance(UpdatableStorageInterface<Passenger, Long> storage, ObservablePassenger observable,
+            ObservablePassengerFlight observableFligths) {
         if (instance == null) {
-            instance = new ManagerPassenger(storage);
+            instance = new ManagerPassenger(storage, observable, observableFligths);
         }
         return instance;
     }
-    
-     public static ManagerPassenger getInstance() {
-        if (instance == null) {
-            return null;
-        }
+
+    /**
+     * Devuelve la instancia única de ManagerPassenger si ya fue creada, o null.
+     *
+     * @return Instancia única de {@code ManagerPassenger} o {@code null} si no
+     * existe.
+     */
+    public static ManagerPassenger getInstance() {
         return instance;
     }
 
     /**
      * Agrega un nuevo pasajero al sistema si no existe otro con el mismo ID.
+     * Notifica a los observadores si se agregó correctamente.
      *
      * @param passenger El pasajero a agregar.
      * @return {@code true} si se agregó correctamente, {@code false} si ya
-     * existía una con el mismo ID.
+     * existía uno con el mismo ID.
      */
     @Override
     public boolean add(Passenger passenger) {
-        return storage.add(passenger);
+        boolean added = storage.add(passenger);
+        if (added) {
+            List<Passenger> passengers = storage.getAll(); // notifica cuando se agrega un pasejero
+            observable.notifyObservers(passengers);
+        }
+        return added;
     }
 
     /**
@@ -81,14 +103,40 @@ public class ManagerPassenger implements ManagerInterface<Passenger, Long> {
     }
 
     /**
-     * Actualiza los datos de un pasajero existente.
+     * Actualiza los datos de un pasajero existente. Notifica a los observadores
+     * si la actualización fue exitosa.
      *
      * @param passenger El pasajero con la información actualizada.
      * @return {@code true} si el pasajero fue actualizado correctamente,
      * {@code false} si no existe.
      */
     public boolean update(Passenger passenger) {
-        return storage.update(passenger);
+        boolean updated = storage.update(passenger);
+        if (updated) {
+            List<Passenger> passengers = storage.getAll();  // notifica cuando se actualiza el pasejero
+            observable.notifyObservers(passengers);
+        }
+        return updated;
     }
 
+    /**
+     * Agrega un vuelo a un pasajero identificado por su ID.Notifica a los
+     * observadores si el vuelo fue agregado correctamente.
+     *
+     * @param passenger
+     * @param flight Vuelo a agregar.
+     * @return {@code true} si el vuelo fue agregado correctamente,
+     * {@code false} si no.
+     */
+    public boolean addFlightToPassenger(Passenger passenger, Flight flight) {
+        boolean added = storage.addFlight(passenger, flight);
+        if (added) {
+            List<Passenger> passengers = storage.getAll(); 
+            observable.notifyObservers(passengers);
+            
+            List<Flight> flights = storage.getAllFligts(passenger); // notifica cuando se actualiza los vuelos del pasajero
+            observableFlights.notifyObservers(flights);
+        }
+        return added;
+    }
 }

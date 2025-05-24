@@ -9,7 +9,6 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
 
 /**
  *
@@ -64,19 +63,13 @@ public class Passenger {
      *
      * @param flight el vuelo a agregar; no debe ser {@code null} y debe tener
      * un ID válido.
-     * @return {@code true} si el vuelo fue agregado exitosamente; {@code false}
-     * si el vuelo ya estaba asociado al pasajero.
      */
-    public boolean addFlight(Flight flight) {
-        if (!hasFlight(flight.getId())) {
-            this.flights.add(flight);
-            this.flights.sort(Comparator.comparing(Flight::getDepartureDate));
-            flight.addPassenger(this);
-            return true;
-        } else {
-            return false;
-        }
+    public void addFlight(Flight flight) {
+    if (!this.flights.contains(flight)) {
+        this.flights.add(flight);
+        this.flights.sort(Comparator.comparing(Flight::getDepartureDate));
     }
+}
 
     public Passenger clone() {
         return new Passenger(

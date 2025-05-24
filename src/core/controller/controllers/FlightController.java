@@ -1,5 +1,8 @@
-package core.controller;
+package core.controller.controllers;
 
+import core.controller.observers.implementations.ObserverFlight;
+import core.controller.observers.implementations.ObserverPassenger;
+import core.controller.observers.implementations.ObserverPassengerFlight;
 import core.controller.utils.Response;
 import core.controller.utils.Status;
 import core.model.entity.Flight;
@@ -10,24 +13,25 @@ import core.model.manager.implementations.ManagerFlight;
 import core.model.manager.implementations.ManagerLocation;
 import core.model.manager.implementations.ManagerPassenger;
 import core.model.manager.implementations.ManagerPlane;
-import core.model.storage.implementations.StoragePlane;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import javax.swing.JTable;
 
 public class FlightController {
 
-
     // Instancias de storages y managers
-   
     private final ManagerFlight managerFlight;
     private final ManagerPlane managerPlane;
     private final ManagerLocation managerLocation;
     private final ManagerPassenger managerPassenger;
 
+    private ObserverFlight observer;
+    private ObserverPassenger observerPassenger;
+    private ObserverPassengerFlight observerPassengerFlight;
 
     public FlightController(
             ManagerFlight managerFlight,
@@ -39,6 +43,27 @@ public class FlightController {
         this.managerPlane = managerPlane;
         this.managerLocation = managerLocation;
         this.managerPassenger = managerPassenger;
+        this.observer = null;
+        this.observerPassenger = null;
+        this.observerPassengerFlight = null;
+    }
+
+    public void setObserver(JTable table) {
+        if (this.observer == null) {
+            this.observer = ObserverFlight.getInstance(table);
+        }
+    }
+
+    public void setObserverPassenger(JTable table) {
+        if (this.observerPassenger == null) {
+            this.observerPassenger = ObserverPassenger.getInstance(table);
+        }
+    }
+
+    public void setObserverPassengerFlight(JTable table) {
+        if (this.observerPassengerFlight == null) {
+            this.observerPassengerFlight = ObserverPassengerFlight.getInstance(table);
+        }
     }
 
     public Response createFlight(String id, String planeId, String departureLocation,
@@ -145,6 +170,10 @@ public class FlightController {
                 return new Response("A flight with that ID already exists", Status.BAD_REQUEST);
             }
 
+            if (observer != null) {
+                observer.update(managerFlight.getAll());
+            }
+
             return new Response("Flight created successfully", Status.CREATED);
 
         } catch (Exception e) {
@@ -152,48 +181,60 @@ public class FlightController {
         }
     }
 
-    public Response addPassenger(String PassengerID, String flightID) {
+    public Response addPassenger(String passengerId, String flightId) {
         try {
             // Validar ID del pasajero
             long idLong;
             try {
-                idLong = Long.parseLong(PassengerID);
-                if (idLong < 0 || PassengerID.length() > 15) {
-                    return new Response("Id must be >= 0 and at most 15 digits", Status.BAD_REQUEST);
+                idLong = Long.parseLong(passengerId);
+                if (idLong < 0 || passengerId.length() > 15) {
+                    return new Response("Passenger ID must be >= 0 and at most 15 digits", Status.BAD_REQUEST);
                 }
             } catch (NumberFormatException ex) {
-                return new Response("Id must be numeric", Status.BAD_REQUEST);
+                return new Response("Passenger ID must be numeric", Status.BAD_REQUEST);
             }
 
-            // Buscamos al pasajero
-            Passenger passanger = managerPassenger.getById(idLong);
-
-            if (passanger == null) {
+            // Buscar al pasajero
+            Passenger passenger = managerPassenger.getById(idLong);
+            if (passenger == null) {
                 return new Response("Passenger not found", Status.NOT_FOUND);
             }
 
-            // Validar formato de ID del vuelo: XXXYYY
-            if (flightID == null || !flightID.matches("^[A-Z]{3}\\d{3}$")) {
+            // Validar ID del vuelo (formato XXXYYY)
+            if (flightId == null || !flightId.matches("^[A-Z]{3}\\d{3}$")) {
                 return new Response("Flight ID must follow the format XXXYYY (3 uppercase letters and 3 digits)", Status.BAD_REQUEST);
             }
 
             // Buscar vuelo
-            Flight flight = managerFlight.getById(flightID);
+            Flight flight = managerFlight.getById(flightId);
             if (flight == null) {
                 return new Response("Flight not found", Status.NOT_FOUND);
             }
 
-            // Validar capacidad del avión
+            // Validar capacidad
             if (flight.getNumPassengers() >= flight.getPlane().getMaxCapacity()) {
                 return new Response("Flight is full", Status.BAD_REQUEST);
             }
 
-            if (passanger.addFlight(flight)) {
-                return new Response("Passenger is already in flitht " + flightID, Status.BAD_REQUEST);
+            // Agregar pasajero
+            if (!managerFlight.addPassenger(flight, passenger)) {
+                return new Response("Passenger is already in flight " + flightId, Status.BAD_REQUEST);
+            }
+
+            // Notificar observadores
+            if (observer != null) {
+                observer.update(managerFlight.getAll());
+            }
+            if (observerPassenger != null) {
+                observerPassenger.update(managerPassenger.getAll());
+            }
+            if (observerPassengerFlight != null) {
+                observerPassengerFlight.update(passenger.getFlights());
             }
 
             return new Response("Passenger added to flight successfully", Status.OK);
         } catch (Exception e) {
+            e.printStackTrace(); // o usar un logger
             return new Response("Unexpected error", Status.INTERNAL_SERVER_ERROR);
         }
     }
@@ -224,7 +265,7 @@ public class FlightController {
      * during delay</li>
      * </ul>
      */
-    public  Response delayFlight(String flightId, String delayHours, String delayMinutes) {
+    public Response delayFlight(String flightId, String delayHours, String delayMinutes) {
 
         // Validar ID de vuelo
         if (flightId == null || !flightId.matches("^[A-Z]{3}\\d{3}$")) {
@@ -251,6 +292,10 @@ public class FlightController {
 
         try {
             flight.delay(hours, minutes);
+            // aqui se tiene que usar el observer
+            if (observer != null) {
+                observer.update(managerFlight.getAll());
+            }
             return new Response("Flight delayed successfully", Status.OK, flight);
         } catch (Exception e) {
             return new Response("Error delaying flight", Status.INTERNAL_SERVER_ERROR);
