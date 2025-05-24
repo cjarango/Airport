@@ -3,20 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/shari/OneDrive/Desktop/Airport/src/core/utils/parser/interfaces/JsonParser.java</file>
             <file>file:/C:/Users/shari/OneDrive/Desktop/Airport/src/main/Main.java</file>
-            <file>file:/C:/Users/shari/OneDrive/Desktop/Airport/src/core/model/entity/Flight.java</file>
-            <file>file:/C:/Users/shari/OneDrive/Desktop/Airport/src/core/model/manager/interfaces/ManagerInterface.java</file>
+            <file>file:/C:/Users/shari/OneDrive/Desktop/Airport/src/main/UIConfigurator.java</file>
             <file>file:/C:/Users/shari/OneDrive/Desktop/Airport/src/core/view/AirportFrame.java</file>
             <file>file:/C:/Users/shari/OneDrive/Desktop/Airport/src/core/model/storage/implementations/StorageFlight.java</file>
-            <file>file:/C:/Users/shari/OneDrive/Desktop/Airport/src/core/utils/loader/implimentations/FlightLoader.java</file>
-            <file>file:/C:/Users/shari/OneDrive/Desktop/Airport/src/core/controller/PassengerController.java</file>
-            <file>file:/C:/Users/shari/OneDrive/Desktop/Airport/src/core/controller/FlightController.java</file>
-            <file>file:/C:/Users/shari/OneDrive/Desktop/Airport/src/core/model/entity/Plane.java</file>
-            <file>file:/C:/Users/shari/OneDrive/Desktop/Airport/src/core/utils/parser/implimentations/FlightParser.java</file>
-            <file>file:/C:/Users/shari/OneDrive/Desktop/Airport/src/main/AppInitializer.java</file>
-            <file>file:/C:/Users/shari/OneDrive/Desktop/Airport/src/main/UIConfigurator.java</file>
-            <file>file:/C:/Users/shari/OneDrive/Desktop/Airport/src/core/model/entity/Location.java</file>
         </group>
     </open-files>
 </project-private>

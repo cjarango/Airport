@@ -84,7 +84,7 @@ public class AirportFrame extends javax.swing.JFrame {
         for (int i = 1; i < 13; i++) {
             comboBirthMonth.addItem("" + i);
             comboxDepartureMonthFlight.addItem("" + i);
-            MONTH5.addItem("" + i);
+            ComboMonthUpdate.addItem("" + i);
         }
     }
 
@@ -92,7 +92,7 @@ public class AirportFrame extends javax.swing.JFrame {
         for (int i = 1; i < 32; i++) {
             comboBirthDay.addItem("" + i);
             comboxDepartureDayFlight.addItem("" + i);
-            DAY5.addItem("" + i);
+            comboDayUpdate.addItem("" + i);
         }
     }
 
@@ -125,7 +125,7 @@ public class AirportFrame extends javax.swing.JFrame {
 
         panelRound1 = new core.view.PanelRound();
         panelRound2 = new core.view.PanelRound();
-        jButton13 = new javax.swing.JButton();
+        btnSalir = new javax.swing.JButton();
         jTabbedPanel1 = new javax.swing.JTabbedPane();
         panelAdministration = new javax.swing.JPanel();
         comboUserSelect = new javax.swing.JComboBox<>();
@@ -202,9 +202,9 @@ public class AirportFrame extends javax.swing.JFrame {
         jLabel38 = new javax.swing.JLabel();
         txtLastNameUpdate = new javax.swing.JTextField();
         jLabel39 = new javax.swing.JLabel();
-        txtBirthdateUpdate = new javax.swing.JTextField();
-        MONTH5 = new javax.swing.JComboBox<>();
-        DAY5 = new javax.swing.JComboBox<>();
+        txtYearUpdate = new javax.swing.JTextField();
+        ComboMonthUpdate = new javax.swing.JComboBox<>();
+        comboDayUpdate = new javax.swing.JComboBox<>();
         txtNumberPhoneUpdate = new javax.swing.JTextField();
         jLabel40 = new javax.swing.JLabel();
         txtCodePhoneUpdate = new javax.swing.JTextField();
@@ -280,14 +280,14 @@ public class AirportFrame extends javax.swing.JFrame {
             }
         });
 
-        jButton13.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
-        jButton13.setText("X");
-        jButton13.setBorderPainted(false);
-        jButton13.setContentAreaFilled(false);
-        jButton13.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton13.addActionListener(new java.awt.event.ActionListener() {
+        btnSalir.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
+        btnSalir.setText("X");
+        btnSalir.setBorderPainted(false);
+        btnSalir.setContentAreaFilled(false);
+        btnSalir.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnSalir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton13ActionPerformed(evt);
+                btnSalirActionPerformed(evt);
             }
         });
 
@@ -296,14 +296,14 @@ public class AirportFrame extends javax.swing.JFrame {
         panelRound2Layout.setHorizontalGroup(
             panelRound2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelRound2Layout.createSequentialGroup()
-                .addContainerGap(1083, Short.MAX_VALUE)
-                .addComponent(jButton13, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(1086, Short.MAX_VALUE)
+                .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(17, 17, 17))
         );
         panelRound2Layout.setVerticalGroup(
             panelRound2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelRound2Layout.createSequentialGroup()
-                .addComponent(jButton13)
+                .addComponent(btnSalir)
                 .addGap(0, 12, Short.MAX_VALUE))
         );
 
@@ -758,13 +758,13 @@ public class AirportFrame extends javax.swing.JFrame {
         jLabel39.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
         jLabel39.setText("Birthdate:");
 
-        txtBirthdateUpdate.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
+        txtYearUpdate.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
 
-        MONTH5.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
-        MONTH5.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Month" }));
+        ComboMonthUpdate.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
+        ComboMonthUpdate.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Month" }));
 
-        DAY5.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
-        DAY5.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Day" }));
+        comboDayUpdate.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
+        comboDayUpdate.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Day" }));
 
         txtNumberPhoneUpdate.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
 
@@ -816,11 +816,11 @@ public class AirportFrame extends javax.swing.JFrame {
                             .addGroup(panelUpdateInfoLayout.createSequentialGroup()
                                 .addComponent(jLabel39)
                                 .addGap(55, 55, 55)
-                                .addComponent(txtBirthdateUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(txtYearUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(30, 30, 30)
-                                .addComponent(MONTH5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(ComboMonthUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(34, 34, 34)
-                                .addComponent(DAY5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(comboDayUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(panelUpdateInfoLayout.createSequentialGroup()
                                 .addComponent(jLabel42)
                                 .addGap(56, 56, 56)
@@ -858,9 +858,9 @@ public class AirportFrame extends javax.swing.JFrame {
                 .addGap(29, 29, 29)
                 .addGroup(panelUpdateInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel39)
-                    .addComponent(txtBirthdateUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(MONTH5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(DAY5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtYearUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(ComboMonthUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(comboDayUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(29, 29, 29)
                 .addGroup(panelUpdateInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel42)
@@ -1061,7 +1061,7 @@ public class AirportFrame extends javax.swing.JFrame {
         panelShowAllPassengerLayout.setVerticalGroup(
             panelShowAllPassengerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelShowAllPassengerLayout.createSequentialGroup()
-                .addContainerGap(72, Short.MAX_VALUE)
+                .addContainerGap(75, Short.MAX_VALUE)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(btnRefreshShowPassengers)
@@ -1728,9 +1728,9 @@ public class AirportFrame extends javax.swing.JFrame {
           String id = txtIDUpdate.getText();
           String firstname = txtFirstNameUpdate.getText();
           String lastname = txtLastNameUpdate.getText();
-          String year = txtBirthdateUpdate.getText();
-          String month = comboBirthMonth.getItemAt(MONTH5.getSelectedIndex());
-          String day = comboBirthDay.getItemAt(DAY5.getSelectedIndex());
+          String year = txtYearUpdate.getText();
+          String month = comboBirthMonth.getItemAt(ComboMonthUpdate.getSelectedIndex());
+          String day = comboBirthDay.getItemAt(comboDayUpdate.getSelectedIndex());
           String phoneCode = txtCodePhoneUpdate.getText();
           String phone = txtNumberPhoneUpdate.getText();
           String country = txtCountryUpdate.getText();
@@ -1749,7 +1749,7 @@ public class AirportFrame extends javax.swing.JFrame {
             txtIDUpdate.setText("");
             txtFirstNameUpdate.setText("");
             txtLastNameUpdate.setText("");
-            txtBirthdateUpdate.setText("");
+            txtYearUpdate.setText("");
             comboBirthMonth.setSelectedIndex(0);
             comboBirthDay.setSelectedIndex(0);
             txtCodePhoneUpdate.setText("");
@@ -2012,9 +2012,9 @@ public class AirportFrame extends javax.swing.JFrame {
           }
     }//GEN-LAST:event_btnRefreshShowLocationsActionPerformed
 
-    private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
+    private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
         System.exit(0);
-    }//GEN-LAST:event_jButton13ActionPerformed
+    }//GEN-LAST:event_btnSalirActionPerformed
 
     private void comboUserSelectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboUserSelectActionPerformed
         try {
@@ -2095,8 +2095,7 @@ public class AirportFrame extends javax.swing.JFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox<String> DAY5;
-    private javax.swing.JComboBox<String> MONTH5;
+    private javax.swing.JComboBox<String> ComboMonthUpdate;
     private javax.swing.JButton btnAddFligth;
     private javax.swing.JButton btnCreateAirplane;
     private javax.swing.JButton btnCreateFlight;
@@ -2108,11 +2107,13 @@ public class AirportFrame extends javax.swing.JFrame {
     private javax.swing.JButton btnRefreshShowPassengers;
     private javax.swing.JButton btnRefreshShowPlanes;
     private javax.swing.JButton btnRegisterPassenger;
+    private javax.swing.JButton btnSalir;
     private javax.swing.JButton btnUpdate;
     private javax.swing.JComboBox<String> comboArrivalFlightRegistration;
     private javax.swing.JComboBox<String> comboBirthDay;
     private javax.swing.JComboBox<String> comboBirthMonth;
     private javax.swing.JTextField comboBirthYear;
+    private javax.swing.JComboBox<String> comboDayUpdate;
     private javax.swing.JComboBox<String> comboDepartureFlightRegistration;
     private javax.swing.JComboBox<String> comboFlight;
     private javax.swing.JComboBox<String> comboHoursDelayFlight;
@@ -2129,7 +2130,6 @@ public class AirportFrame extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> comboxDepartureMonthFlight;
     private javax.swing.JComboBox<String> comboxScaleHourFlight;
     private javax.swing.JComboBox<String> comboxlScaleMinuteFlight;
-    private javax.swing.JButton jButton13;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -2208,7 +2208,6 @@ public class AirportFrame extends javax.swing.JFrame {
     private javax.swing.JTable tableShowAllPlanes;
     private javax.swing.JTable tableShowMyFlights;
     private javax.swing.JTextField txtAirlineAirplane;
-    private javax.swing.JTextField txtBirthdateUpdate;
     private javax.swing.JTextField txtBrandAirplane;
     private javax.swing.JTextField txtCodePhonePassenger;
     private javax.swing.JTextField txtCodePhoneUpdate;
@@ -2234,5 +2233,6 @@ public class AirportFrame extends javax.swing.JFrame {
     private javax.swing.JTextField txtNumberPhoneUpdate;
     private javax.swing.JTextField txtPassengerID;
     private javax.swing.JTextField txtPassengerName;
+    private javax.swing.JTextField txtYearUpdate;
     // End of variables declaration//GEN-END:variables
 }
